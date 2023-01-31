@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int        @id @default(autoincrement())
+  firstName        String
+  lastName         String
+  avatar           String
+  receivedFeedback Feedback[]
+  givenFeedback    Feedback[] @relation("GivenFeedback")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Feedback {
+  id        Int    @id @default(autoincrement())
+  title     String
+  body      String
+  author    User   @relation(name: "GivenFeedback", fields: [authorId], references: [id])
+  authorId  Int
+  receivers User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+// model User {
+//   id                Int                 @id @default(autoincrement())
+//   firstnama         String
+//   lastname          String
+//   avatar            String
+//   feedbackReceivers FeedbackReceivers[]
+//   givenFeedback     Feedback[]          @relation("FeedbackGiven")
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @default(now()) @updatedAt
+// }
+
+// model Feedback {
+//   id        Int                 @id @default(autoincrement())
+//   title     String
+//   body      String
+//   author    User                @relation(name: "FeedbackGiven", fields: [authorId], references: [id])
+//   authorId  Int
+//   receivers FeedbackReceivers[]
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @default(now()) @updatedAt
+// }
+
+// model FeedbackReceivers {
+//   receiver   User     @relation(fields: [receiverId], references: [id])
+//   receiverId Int // relation scalar field (used in the `@relation` attribute above)
+//   feedback   Feedback @relation(fields: [feedbackId], references: [id])
+//   feedbackId Int // relation scalar field (used in the `@relation` attribute above)
+
+//   @@id([receiverId, feedbackId])
+// }
+
+// model User {
+//   id               Int        @id @default(autoincrement())
+//   firstname        String     @unique
+//   lastname         String     @unique
+//   givenFeedback    Feedback[] @relation("FeedbackGiven")
+//   receivedFeedback Feedback[] @relation("FeedbackReceived")
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt @default(now())
+// }
+
+// model Feedback {
+//   id         Int    @id @default(autoincrement())
+//   title      String
+//   body       String
+//   author     User   @relation(name: "FeedbackGiven", fields: [authorId], references: [id])
+//   authorId   Int
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt @default(now())
+// }
+
+// model FeedbackReceiver {
+//   feedback     User   @relation(name: "Feedback", fields: [feedbackId], references: [id])
+//   feedbackId   Int
+
+//   receiver     User   @relation(name: "FeedbackReceived", fields: [receiverId], references: [id])
+//   receiverId   Int
+
+//   @@id([receiverId, feedbackId])
+// }
